@@ -50,3 +50,9 @@
 .morph-active {
   transform: scale(1.2);
 }
+
+@layer base {
+  html {
+    -webkit-tap-highlight-color: transparent;
+  }
+}
