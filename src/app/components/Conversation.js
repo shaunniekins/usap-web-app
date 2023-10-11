@@ -31,6 +31,7 @@ const Conversation = ({ setIsMatchFound }) => {
       window.removeEventListener("beforeunload", handleBeforeUnload);
     };
   }, []);
+
   const handleEndConvo = () => {
     let exit = confirm("Are you sure you want to end this conversation?");
 
