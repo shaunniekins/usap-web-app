@@ -1,4 +1,5 @@
 import { AiOutlineUser, AiOutlineFilter } from "react-icons/ai";
+import Image from "next/image";
 
 const Navbar = () => {
   return (
@@ -6,11 +7,7 @@ const Navbar = () => {
       <button>
         <AiOutlineUser size={30} />
       </button>
-      <img
-        src="/usap-with-name-logo.png"
-        alt=""
-        className="h-[80px] w-[110px]"
-      />
+      <Image src="/usap-with-name-logo.png" alt="" width={110} height={80} />
       <button>
         <AiOutlineFilter size={30} />
       </button>

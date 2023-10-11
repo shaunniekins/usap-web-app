@@ -44,7 +44,7 @@ const Conversation = ({ setIsMatchFound }) => {
         <IoExitOutline color="white" size={25} />
 
         <div className="flex flex-col items-center">
-          <p className="text-xs text-gray-400">You're chatting with</p>
+          <p className="text-xs text-gray-400">You are chatting with</p>
           <p className="text-md font-medium">shaunniekins123</p>
         </div>
         <button onClick={handleEndConvo}>
