@@ -40,7 +40,7 @@ const Main = () => {
         <Navbar />
       ) : (
         <button
-          className="self-start m-5 text-xs text-gray-400 rounded-full"
+          className="self-start m-5 text-xs text-gray-400 rounded-full z-30"
           onClick={() => setSearchActivated(false)}>
           Cancel
         </button>
@@ -56,7 +56,7 @@ const Main = () => {
         <button
           className={`heart bg-[#8C52FF] rounded-full p-5 ${
             isSearchActivated ? "pulse morph-active" : "morph"
-          } relative z-50`}
+          } relative z-20`}
           onClick={() => setSearchActivated(true)}>
           <AiFillHeart size={isSearchActivated ? 175 : 185} color="white" />
         </button>
