@@ -1,7 +1,7 @@
 const SignIn = () => {
   return (
     <>
-      <div className="w-screen h-screen flex flex-col items-center py-[80px] justify-around px-[20px] font-Roboto">
+      <div className="w-screen h-[100dvh] flex flex-col items-center py-[80px] justify-around px-[20px] font-Roboto">
         <div className="flex flex-col items-center">
           <img
             src="/usap-logo.png"

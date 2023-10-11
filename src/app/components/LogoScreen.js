@@ -4,7 +4,7 @@ import { ThreeDots } from "react-loader-spinner";
 
 const LogoScreen = () => {
   return (
-    <div className="h-screen w-screen flex flex-col justify-center items-center">
+    <div className="h-[100dvh] w-screen flex flex-col justify-center items-center">
       <img
         src="/usap-logo.png"
         alt="Usap Logo"

@@ -30,30 +30,38 @@ const SearchingText = () => {
 
 const Main = () => {
   //colors:
-  // 5E17EB, 8C52FF
+  // 5E17EB (dark), 8C52FF (light)
   const [isSearchActivated, setSearchActivated] = useState(false);
   const [matchFound, setMatchFound] = useState(false);
 
   return (
-    <div className="w-screen h-screen flex flex-col items-center font-Roboto">
+    <div className="w-screen h-[100dvh] flex flex-col items-center font-Roboto">
       {!isSearchActivated ? (
         <Navbar />
       ) : (
         <button
-          className="self-start m-5 font-mono text-xl rounded-full"
+          className="self-start m-5 text-xs text-gray-400 rounded-full"
           onClick={() => setSearchActivated(false)}>
-          X
+          Cancel
         </button>
       )}
-      <div className="w-full h-full flex flex-col items-center justify-center">
+      <div className="w-full h-full mt-[-100px] flex items-center justify-center relative">
+        {isSearchActivated ? (
+          <>
+            <div className="circle2 pulseCircle2 w-[600px] h-[600px] z-0 absolute bg-purple-400 rounded-full" />
+            <div className="circle1 pulseCircle1 w-[400px] h-[400px] z-10 absolute bg-purple-300 rounded-full" />
+          </>
+        ) : null}
+
         <button
           className={`heart bg-[#8C52FF] rounded-full p-5 ${
             isSearchActivated ? "pulse morph-active" : "morph"
-          }`}
+          } relative z-50`}
           onClick={() => setSearchActivated(true)}>
-          <TbHeartHandshake size={175} color="white" />
+          <AiFillHeart size={isSearchActivated ? 175 : 185} color="white" />
         </button>
       </div>
+
       {!isSearchActivated ? (
         <p className=" text-gray-400 text-sm mt-[-60px] mb-[130px]">
           Tap Heart to start
