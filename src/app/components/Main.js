@@ -35,7 +35,7 @@ const Main = () => {
   const [matchFound, setMatchFound] = useState(false);
 
   return (
-    <div className="w-screen h-[100dvh] flex flex-col items-center font-Roboto">
+    <div className="w-screen h-[100dvh] flex flex-col items-center font-Roboto overflow-hidden">
       {!isSearchActivated ? (
         <Navbar />
       ) : (
@@ -58,12 +58,12 @@ const Main = () => {
             isSearchActivated ? "pulse morph-active" : "morph"
           } relative z-20`}
           onClick={() => setSearchActivated(true)}>
-          <AiFillHeart size={isSearchActivated ? 175 : 185} color="white" />
+          <AiFillHeart size={isSearchActivated ? 185 : 130} color="white" />
         </button>
       </div>
 
       {!isSearchActivated ? (
-        <p className=" text-gray-400 text-sm mt-[-60px] mb-[130px]">
+        <p className=" text-gray-400 text-sm mt-[-100px] mb-[100px]">
           Tap Heart to start
         </p>
       ) : (
