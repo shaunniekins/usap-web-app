@@ -53,57 +53,13 @@ const Conversation = ({ setIsMatchFound }) => {
       </div>
 
       <div className="convo-area bg-gray-100 w-full h-full px-3 pb-5 flex flex-col-reverse justify-start space-y-2 overflow-y-auto">
-        <SentMessage msg={"1"} />
         <SentMessage msg={"hi"} />
         <ReceiveMessage msg={"wassup"} />
         <SentMessage msg={"hello"} />
         <SentMessage msg={"hi"} />
-        <ReceiveMessage msg={"wassup"} />
-        <SentMessage msg={"hello"} />
-        <SentMessage msg={"hi"} />
-        <ReceiveMessage msg={"wassup"} />
-        <SentMessage msg={"hello"} />
-        <SentMessage msg={"hi"} />
-        <ReceiveMessage msg={"wassup"} />
-        <SentMessage msg={"hello"} />
-        <SentMessage msg={"hi"} />
-        <ReceiveMessage msg={"wassup"} />
-        <SentMessage msg={"hello"} />
-        <SentMessage msg={"hi"} />
-        <ReceiveMessage msg={"wassup"} />
-        <SentMessage msg={"hello"} />
-        <SentMessage msg={"hi"} />
-        <ReceiveMessage msg={"wassup"} />
-        <SentMessage msg={"hello"} />
-        <SentMessage msg={"hi"} />
-        <ReceiveMessage msg={"wassup"} />
-        <SentMessage msg={"hello"} />
-        <SentMessage msg={"hi"} />
-        <ReceiveMessage msg={"wassup"} />
-        <SentMessage msg={"hello"} />
-        <SentMessage msg={"hi"} />
-        <ReceiveMessage msg={"wassup"} />
-        <SentMessage msg={"hello"} />
-        <SentMessage msg={"hi"} />
-        <ReceiveMessage msg={"wassup"} />
-        <SentMessage msg={"hello"} />
-        <SentMessage msg={"hi"} />
-        <ReceiveMessage msg={"wassup"} />
-        <SentMessage msg={"hello"} />
-        <SentMessage msg={"hi"} />
-        <ReceiveMessage msg={"wassup"} />
-        <SentMessage msg={"hello"} />
-        <SentMessage msg={"hi"} />
-        <ReceiveMessage msg={"wassup"} />
-        <SentMessage msg={"hello"} />
-        <SentMessage msg={"hi"} />
-        <ReceiveMessage msg={"wassup"} />
-        <SentMessage msg={"hello"} />
-        <SentMessage msg={"hi"} />
-        <ReceiveMessage msg={"wassup"} />
-        <SentMessage msg={"hello"} />
-        <SentMessage msg={"hi"} />
-        <ReceiveMessage msg={"wassup"} />
+        <p className="self-center1 text-center text-xs text-gray-400 pb-3">
+          You can now message. Say {`"Hi!"`}
+        </p>
       </div>
 
       <div className="chat w-full py-3 px-3 flex space-x-3 bg-white">
