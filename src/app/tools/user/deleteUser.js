@@ -1,6 +1,6 @@
-import { deleteUserProfileData } from "../data/user_profiles";
+import { deleteUserProfileData } from "../../data/user_profiles";
 
-import { getLocalStorageItem, removeLocalStorageItem } from "./localStorage";
+import { getLocalStorageItem, removeLocalStorageItem } from "../localStorage";
 
 const DeleteUser = async () => {
   const user_name = getLocalStorageItem("user_name");

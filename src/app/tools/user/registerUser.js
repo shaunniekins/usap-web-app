@@ -1,11 +1,11 @@
 import {
   fetchUserProfileData,
   insertUserProfileData,
-} from "../data/user_profiles";
+} from "../../data/user_profiles";
 
-import namesDictionary from "../data/names_dict";
+import namesDictionary from "../../data/names_dict";
 
-import { setLocalStorageItem, getLocalStorageItem } from "./localStorage";
+import { setLocalStorageItem, getLocalStorageItem } from "../localStorage";
 import UpdateUserSearching from "./updateUserSearching";
 
 const generateRandomUsername = () => {
@@ -43,8 +43,10 @@ const RegisterUser = async () => {
 
     await insertUserProfileData(newUser);
     setLocalStorageItem("user_name", newUsername);
+    return newUsername;
   } else {
     UpdateUserSearching(true);
+    return existing_user_name;
   }
 };
 

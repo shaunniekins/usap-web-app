@@ -8,14 +8,13 @@ import { TbHeartHandshake } from "react-icons/tb";
 import Navbar from "./Navbar";
 import Conversation from "./Conversation";
 
-import RegisterUser from "../tools/registerUser";
-import UpdateUserSearching from "../tools/updateUserSearching";
-import DeleteUser from "../tools/deleteUser";
+import RegisterUser from "../tools/user/registerUser";
+import UpdateUserSearching from "../tools/user/updateUserSearching";
+import DeleteUser from "../tools/user/deleteUser";
 // import checkMatch from "../tools/checkMatch";
 
 import { fetchUserProfileData } from "../data/user_profiles";
-import { fetchChatSessionData } from "../data/chat_sessions";
-import { getLocalStorageItem } from "../tools/localStorage";
+import { supabase } from "../../../supabase";
 
 const SearchingText = () => {
   const [dots, setDots] = useState("");
@@ -44,36 +43,11 @@ const Main = () => {
   // 5E17EB (dark), 8C52FF (light)
   const [isSearchActivated, setSearchActivated] = useState(false);
   const [isMatchFound, setIsMatchFound] = useState(false);
-  const [chatData, setChatData] = useState([]);
+  const [localUsername, setLocalUsername] = useState("");
+  const [sessions, setSessions] = useState([]);
+  const [user_id, setUser_id] = useState("");
 
-  const checkMatch = async () => {
-    const user_name = getLocalStorageItem("user_name");
-    const { data: fetchUserNameData } = await fetchUserProfileData();
-
-    const userData = fetchUserNameData.find(
-      (item) => item.user_name === user_name
-    );
-
-    if (userData) {
-      const user_id = userData.user_id;
-      try {
-        let session_data = await fetchChatSessionData(user_id);
-        setChatData(session_data);
-        console.log("chatData", chatData);
-      } catch (error) {
-        console.error("Error:", error);
-      }
-    }
-  };
-
-  useEffect(() => {
-    checkMatch();
-
-    const interval = setInterval(checkMatch, 4000);
-
-    return () => clearInterval(interval);
-  }, []);
-
+  // when user leave or reloads browser
   useEffect(() => {
     const handleBeforeUnload = (event) => {
       event.preventDefault();
@@ -88,9 +62,85 @@ const Main = () => {
     };
   }, []);
 
-  const handleSearchActivate = () => {
+  // finding match
+  const checkMatch = async () => {
+    const { data: fetchUserNameData } = await fetchUserProfileData();
+    const userData = fetchUserNameData.find(
+      (item) => item.user_name === localUsername
+    );
+
+    if (userData) {
+      setUser_id(userData.user_id);
+    }
+  };
+
+  useEffect(() => {
+    if (localUsername) {
+      checkMatch();
+    }
+  }, [localUsername]);
+
+  useEffect(() => {
+    // console.log("Entering useEffect");
+    async function fetchInitialData() {
+      if (user_id) {
+        // console.log("user_id", user_id);
+        try {
+          const { data, error } = await supabase
+            .from("chat_sessions")
+            .select()
+            .or(`user1.eq.${user_id}`, `user2.eq.${user_id}`);
+
+          if (error) {
+            console.error("Error fetching data:", error);
+          } else {
+            if (data && data.length > 0) {
+              setSessions(data);
+            }
+          }
+        } catch (error) {
+          console.error("An error occurred:", error);
+        }
+      }
+    }
+
+    fetchInitialData();
+
+    const channel = supabase
+      .channel("realtime sessions")
+      .on(
+        "postgres_changes",
+        { event: "INSERT", schema: "public", table: "chat_sessions" },
+        (payload) => {
+          // console.log("Received real-time update", payload);
+          // append new data
+          // setSessions((prevSessions) => [...prevSessions, payload.new]);
+          // Replace the entire sessions state with the new data
+          setSessions(payload.new);
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+    //supabase or sessions
+  }, [user_id, supabase]);
+
+  let hasPrinted = false;
+  // console.log("session", sessions);
+
+  useEffect(() => {
+    if (sessions && sessions.length !== 0 && !hasPrinted) {
+      setIsMatchFound(true);
+      hasPrinted = true;
+    }
+  }, [sessions]);
+
+  const handleSearchActivate = async () => {
     setSearchActivated(true);
-    RegisterUser();
+    const username = await RegisterUser();
+    setLocalUsername(username);
   };
 
   const handleSearchDeactivate = () => {
@@ -141,7 +191,12 @@ const Main = () => {
           )}
         </div>
       ) : (
-        <Conversation setIsMatchFound={setIsMatchFound} />
+        <Conversation
+          session={sessions}
+          userID={user_id}
+          setIsMatchFound={setIsMatchFound}
+          handleSearchDeactivate={handleSearchDeactivate}
+        />
       )}
     </div>
   );

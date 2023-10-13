@@ -1,6 +1,6 @@
-import { updateUserProfileData } from "../data/user_profiles";
+import { updateUserProfileData } from "../../data/user_profiles";
 
-import { getLocalStorageItem } from "./localStorage";
+import { getLocalStorageItem } from "../localStorage";
 
 const UpdateUserSearching = async (isSearching) => {
   const user_name = getLocalStorageItem("user_name");
