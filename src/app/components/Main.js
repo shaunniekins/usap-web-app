@@ -185,11 +185,11 @@ const Main = () => {
           </div>
 
           {!isSearchActivated ? (
-            <p className=" text-gray-400 text-sm bottom-24 absolute">
-              Tap Heart to start
+            <p className=" text-gray-400 text-sm bottom-16 absolute">
+              Tap to start
             </p>
           ) : (
-            <div className=" text-gray-400 text-lg mb-[130px]">
+            <div className=" text-gray-400 text-lg mb-[100px]">
               <SearchingText />
             </div>
           )}
