@@ -35,7 +35,7 @@ const SearchingText = () => {
     };
   }, []);
 
-  return <p className=" text-gray-400 text-lg mb-[130px]">Searching{dots}</p>;
+  return <p>Searching{dots}</p>;
 };
 
 const Main = () => {
@@ -149,9 +149,11 @@ const Main = () => {
   };
 
   return (
-    <div className="w-screen h-[100dvh] flex flex-col items-center font-Roboto overflow-hidden ">
+    <div className="w-screen h-[100dvh] flex flex-col font-Roboto overflow-hidden">
       {!isSearchActivated && !isMatchFound ? (
-        <Navbar />
+        <div className=" top-0 absolute">
+          <Navbar />
+        </div>
       ) : (
         isSearchActivated &&
         !isMatchFound && (
@@ -163,8 +165,8 @@ const Main = () => {
         )
       )}
       {!isMatchFound ? (
-        <div className="w-full h-full flex flex-col items-center">
-          <div className="w-full h-full mt-[-100px] flex items-center justify-center relative">
+        <div className="w-full h-full flex flex-col items-center justify-center">
+          <div className="w-full h-full flex items-center justify-center relative">
             {isSearchActivated ? (
               <>
                 <div className="circle2 pulseCircle2 w-[600px] h-[600px] z-0 absolute bg-purple-400 rounded-full" />
@@ -183,11 +185,13 @@ const Main = () => {
           </div>
 
           {!isSearchActivated ? (
-            <p className=" text-gray-400 text-sm mt-[-100px] mb-[100px]">
+            <p className=" text-gray-400 text-sm bottom-24 absolute">
               Tap Heart to start
             </p>
           ) : (
-            <SearchingText />
+            <div className=" text-gray-400 text-lg mb-[130px]">
+              <SearchingText />
+            </div>
           )}
         </div>
       ) : (
