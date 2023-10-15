@@ -98,7 +98,7 @@ export const updateChatSessionData = async (rowId, updateData) => {
       console.error("Error updating data:", error);
       return { data: null, error };
     } else {
-      console.log("Successfully updated data:", data);
+      // console.log("Successfully updated data:", data);
       return { data, error: null };
     }
   } catch (error) {
