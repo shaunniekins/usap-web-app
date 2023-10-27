@@ -4,7 +4,7 @@ import { AiFillCloseCircle } from "react-icons/ai";
 import { useEffect, useState } from "react";
 import { updateChatSessionData } from "../data/chat_sessions";
 import UpdateSession from "../tools/session/updateSession";
-import { supabase } from "../../../supabase";
+import { supabase } from "../../../utils/supabase";
 import { sendMessageData } from "../data/convo";
 import { fetchUserProfileData } from "../data/user_profiles";
 
@@ -25,12 +25,17 @@ const ReceiveMessage = ({ msg }) => {
 };
 
 const Conversation = ({
+  rowId,
   session,
-  userID,
+  localUsername,
+  personalColumnLocation,
+  partnerColumnLocation,
+  partnerID,
+  personalID,
+  updateData,
   setIsMatchFound,
   handleSearchDeactivate,
 }) => {
-  // UpdateUserSearching(false);
   handleSearchDeactivate();
 
   const [inputtedMsg, setInputtedMsg] = useState("");
@@ -40,116 +45,133 @@ const Conversation = ({
   const [connectionOfConnectedUser, setConnectionOfConnectedUser] =
     useState(true);
 
-  let rowId = session.id;
-  // const [rowId, setRowId] = useState(session.id);
-  // console.log("rowId", rowId);
+  // console.log("C rowId", rowId);
+  // console.log("C personalID", personalID);
+  // console.log("C personalColumnLocation", personalColumnLocation);
 
-  // what column in the db table user is present
-  let col_present;
+  // console.log("C updateData", updateData);
 
-  let connected_user = "";
-  const personalID = userID;
-  if (personalID !== session.user1) {
-    connected_user = session.user1;
-    col_present = 2;
-  } else {
-    connected_user = session.user2;
-    col_present = 1;
-  }
+  // to do: declare this things in the Main.js
+  // let rowId = session.id;
 
-  let updateData;
-  let connected_user_col;
-  if (col_present === 1) {
-    updateData = {
-      user1_isConnected: false,
-    };
-    connected_user_col = "user2";
-  } else if (col_present === 2) {
-    updateData = {
-      user2_isConnected: false,
-    };
-    connected_user_col = "user2";
-  }
+  // let personalColumnLocation; //int
+  // let partnerColumnLocation; //string
+  // let partnerID = "";
+  // const personalID = userID;
+  // let updateData;
 
+  // if (personalID === session.user1) {
+  //   personalColumnLocation = 1;
+  //   updateData = {
+  //     user1_isConnected: false,
+  //   };
+  //   partnerID = session.user2;
+  //   partnerColumnLocation = "user2";
+  // } else if (personalID === session.user2) {
+  //   personalColumnLocation = 2;
+  //   updateData = {
+  //     user2_isConnected: false,
+  //   };
+  //   partnerID = session.user1;
+  //   partnerColumnLocation = "user1";
+  // }
+
+  // PROBLEM: example when user1 decided to reload page, the database will be updated (false) but the user2 who also reloaded the page, the database will not be updated (still true)
   // when user leave or reloads browser
   useEffect(() => {
-    const handleBeforeUnload = (event) => {
+    const handleBeforeUnload = async (event) => {
       // Perform actions before the component unloads
       event.preventDefault();
       event.returnValue = "";
-      UpdateSession(rowId, updateData);
+      await UpdateSession(rowId, updateData);
     };
+
     window.addEventListener("beforeunload", handleBeforeUnload);
+
     return () => {
       window.removeEventListener("beforeunload", handleBeforeUnload);
     };
-  }, []);
+  }, [rowId, updateData]); // Add rowId and updateData as dependencies
 
+  const handleEndConvo = async () => {
+    let exit = confirm("Are you sure you want to end this conversation?");
+
+    if (exit) {
+      UpdateSession(rowId, updateData);
+      handleSearchDeactivate();
+      setIsMatchFound(false);
+    }
+  };
+
+  // console.log("Conversation rowId", rowId);
+  // console.log("Conversation updateData", updateData);
+
+  // to check the username of connected partner using partner's id
   const checkConnectedUsername = async () => {
     const { data: fetchUserNameData } = await fetchUserProfileData();
     const userData = fetchUserNameData.find(
-      (item) => item.user_id === connected_user
+      (item) => item.user_id === partnerID
     );
 
     if (userData) {
       setConnectedUserName(userData.user_name);
-      // console.log("connectedUserName", connectedUserName);
     }
   };
 
   useEffect(() => {
-    if (connected_user) checkConnectedUsername();
-  }, [connected_user]);
-
-  // console.log("connected_user", connected_user);
-  // console.log("connected_user_col", connected_user_col);
+    if (partnerID) checkConnectedUsername();
+  }, [partnerID]);
 
   // check update to the connectivity of the connected user
   useEffect(() => {
-    async function fetchUpdateUserConnectionData() {
-      try {
-        const { data, error } = await supabase
-          .from("chat_sessions")
-          .select()
-          .eq(connected_user_col, connected_user);
+    // Check if partnerID is not null and has a value
+    if (partnerID) {
+      async function fetchUpdateUserConnectionData() {
+        try {
+          const { data, error } = await supabase
+            .from("chat_sessions")
+            .select()
+            .eq(partnerColumnLocation, partnerID);
 
-        if (error) {
-          console.error("Error fetching data (update): ", error);
+          if (error) {
+            console.error("Error fetching data (update): ", error);
+          } else {
+            setUpdatedConnection(data);
+          }
+        } catch (error) {
+          console.error("An error occurred (update):", error);
+        }
+      }
+
+      fetchUpdateUserConnectionData();
+
+      const channel = supabase
+        .channel("realtime sessions")
+        .on(
+          "postgres_changes",
+          { event: "UPDATE", schema: "public", table: "chat_sessions" },
+          (payload) => {
+            setUpdatedConnection(payload.new);
+            updateConnectionOfConnectedUser(payload.new);
+          }
+        )
+        .subscribe();
+
+      const updateConnectionOfConnectedUser = (updatedData) => {
+        if (partnerColumnLocation === 1) {
+          setConnectionOfConnectedUser(updatedData.user1_isConnected);
         } else {
-          setUpdatedConnection(data);
+          setConnectionOfConnectedUser(updatedData.user2_isConnected);
         }
-      } catch (error) {
-        console.error("An error occurred (update):", error);
-      }
+      };
+
+      return () => {
+        supabase.removeChannel(channel);
+      };
     }
+  }, [partnerID, supabase]);
 
-    fetchUpdateUserConnectionData();
-
-    const channel = supabase
-      .channel("realtime sessions")
-      .on(
-        "postgres_changes",
-        { event: "UPDATE", schema: "public", table: "chat_sessions" },
-        (payload) => {
-          setUpdatedConnection(payload.new);
-          updateConnectionOfConnectedUser(payload.new);
-        }
-      )
-      .subscribe();
-
-    const updateConnectionOfConnectedUser = (updatedData) => {
-      if (connected_user_col === 1) {
-        setConnectionOfConnectedUser(updatedData.user1_isConnected);
-      } else {
-        setConnectionOfConnectedUser(updatedData.user2_isConnected);
-      }
-    };
-
-    return () => {
-      supabase.removeChannel(channel);
-    };
-  }, [supabase]);
-
+  // console.log("col connected user ", partnerColumnLocation);
   // console.log("connectionOfConnectedUser ", connectionOfConnectedUser);
 
   // chat
@@ -230,18 +252,8 @@ const Conversation = ({
     setInputtedMsg("");
   };
 
-  const handleEndConvo = async () => {
-    let exit = confirm("Are you sure you want to end this conversation?");
-
-    if (exit) {
-      UpdateSession(rowId, updateData);
-      handleSearchDeactivate();
-      setIsMatchFound(false);
-    }
-  };
-
   return (
-    <div className="w-screen h-[100dvh] flex flex-col items-center">
+    <div className=" h-[100dvh] flex flex-col items-center w-screen">
       <div className="w-full py-4 px-3 border-b-2 shadow-2xl flex items-center justify-between">
         <IoExitOutline color="white" size={25} />
         {!connectionOfConnectedUser ? (

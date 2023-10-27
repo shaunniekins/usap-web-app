@@ -6,7 +6,7 @@ import {
 import namesDictionary from "../../data/names_dict";
 
 import { setLocalStorageItem, getLocalStorageItem } from "../localStorage";
-import UpdateUserSearching from "./updateUserSearching";
+// import UpdateUserSearching from "./updateUserSearching";
 
 const generateRandomUsername = () => {
   const characters = "0123456789$%#@";
@@ -45,7 +45,7 @@ const RegisterUser = async () => {
     setLocalStorageItem("user_name", newUsername);
     return newUsername;
   } else {
-    UpdateUserSearching(true);
+    // UpdateUserSearching(true);
     return existing_user_name;
   }
 };

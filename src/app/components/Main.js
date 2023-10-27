@@ -14,7 +14,7 @@ import DeleteUser from "../tools/user/deleteUser";
 // import checkMatch from "../tools/checkMatch";
 
 import { fetchUserProfileData } from "../data/user_profiles";
-import { supabase } from "../../../supabase";
+import { supabase } from "../../../utils/supabase";
 
 const SearchingText = () => {
   const [dots, setDots] = useState("");
@@ -47,6 +47,14 @@ const Main = () => {
   const [sessions, setSessions] = useState([]);
   const [user_id, setUser_id] = useState("");
 
+  // for Conversation component
+  const [rowId, setRowId] = useState(null);
+  const [personalColumnLocation, setPersonalColumnLocation] = useState(null);
+  const [partnerColumnLocation, setPartnerColumnLocation] = useState(null);
+  const [partnerID, setPartnerID] = useState("");
+  const [updateData, setUpdateData] = useState(null);
+  const [personalID, setPersonalID] = useState(null);
+
   // when user leave or reloads browser
   useEffect(() => {
     const handleBeforeUnload = (event) => {
@@ -62,7 +70,7 @@ const Main = () => {
     };
   }, []);
 
-  // finding match
+  // retrieval of current user id using local username
   const checkMatch = async () => {
     const { data: fetchUserNameData } = await fetchUserProfileData();
     const userData = fetchUserNameData.find(
@@ -74,6 +82,7 @@ const Main = () => {
     }
   };
 
+  // call checkMatch full if localUsername will have a value
   useEffect(() => {
     if (localUsername) {
       checkMatch();
@@ -89,13 +98,20 @@ const Main = () => {
           const { data, error } = await supabase
             .from("chat_sessions")
             .select()
-            .or(`user1.eq.${user_id}`, `user2.eq.${user_id}`);
+            .or(`user1.eq.${user_id}`, `user2.eq.${user_id}`)
+            .filter(`user1_isConnected`, `eq`, `true`)
+            .filter(`user2_isConnected`, `eq`, `true`);
 
           if (error) {
             console.error("Error fetching data:", error);
           } else {
             if (data && data.length > 0) {
-              setSessions(data);
+              if (
+                (data.user1 === user_id && data.user1_isConnected === true) ||
+                (data.user2 === user_id && data.user2_isConnected === true)
+              ) {
+                setSessions(data);
+              }
             }
           }
         } catch (error) {
@@ -105,18 +121,34 @@ const Main = () => {
     }
 
     fetchInitialData();
+  }, [user_id]);
 
+  useEffect(() => {
+    // const intervalId = setInterval(() => {
     const channel = supabase
-      .channel("realtime sessions")
+      .channel(`${sessions.id}`)
       .on(
         "postgres_changes",
-        { event: "INSERT", schema: "public", table: "chat_sessions" },
+        {
+          event: "INSERT",
+          schema: "public",
+          table: "chat_sessions",
+          // filter: "user1_isConnected=eq.true",
+          // filter: "user2_isConnected=eq.true",
+        },
         (payload) => {
-          // console.log("Received real-time update", payload);
-          // append new data
-          // setSessions((prevSessions) => [...prevSessions, payload.new]);
           // Replace the entire sessions state with the new data
-          setSessions(payload.new);
+          if (
+            (payload.new.user1 === user_id &&
+              payload.new.user1_isConnected === true) ||
+            (payload.new.user2 === user_id &&
+              payload.new.user2_isConnected === true)
+          ) {
+            setSessions(payload.new);
+            // setSessions((prevSessions) => [...prevSessions, payload.new]);
+          } else {
+            console.log("no data");
+          }
         }
       )
       .subscribe();
@@ -124,28 +156,51 @@ const Main = () => {
     return () => {
       supabase.removeChannel(channel);
     };
-    //supabase or sessions
+    // }, 3000);
+    // return () => clearInterval(intervalId); //This is important
+
+    // supabase or sessions
   }, [user_id, supabase]);
+  console.log("sessions", sessions);
 
-  let hasPrinted = false;
-  // console.log("session", sessions);
-
+  // let hasPrinted = false;
   useEffect(() => {
-    if (sessions && sessions.length !== 0 && !hasPrinted) {
-      setIsMatchFound(true);
-      hasPrinted = true;
+    if (sessions && sessions.length !== 0 && !isMatchFound) {
+      setRowId(sessions.id);
+      setPersonalID(user_id);
+
+      if (user_id && sessions.user1 && sessions.user2) {
+        if (user_id === sessions.user1) {
+          setPersonalColumnLocation(1);
+          setUpdateData({
+            user1_isConnected: false,
+          });
+          setPartnerID(sessions.user2);
+          setPartnerColumnLocation("user2");
+        } else if (user_id === sessions.user2) {
+          setPersonalColumnLocation(2);
+          setUpdateData({
+            user2_isConnected: false,
+          });
+          setPartnerID(sessions.user1);
+          setPartnerColumnLocation("user1");
+        }
+        setIsMatchFound(true);
+        // hasPrinted = true;
+      }
     }
   }, [sessions]);
 
   const handleSearchActivate = async () => {
-    setSearchActivated(true);
     const username = await RegisterUser();
     setLocalUsername(username);
+    UpdateUserSearching(true);
+    setSearchActivated(true);
   };
 
   const handleSearchDeactivate = () => {
-    setSearchActivated(false);
     UpdateUserSearching(false);
+    setSearchActivated(false);
   };
 
   return (
@@ -196,8 +251,14 @@ const Main = () => {
         </div>
       ) : (
         <Conversation
+          rowId={rowId}
           session={sessions}
-          userID={user_id}
+          localUsername={localUsername}
+          personalColumnLocation={personalColumnLocation}
+          partnerColumnLocation={partnerColumnLocation}
+          partnerID={partnerID}
+          personalID={personalID}
+          updateData={updateData}
           setIsMatchFound={setIsMatchFound}
           handleSearchDeactivate={handleSearchDeactivate}
         />

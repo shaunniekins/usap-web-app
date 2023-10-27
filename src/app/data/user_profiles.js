@@ -1,4 +1,4 @@
-import { supabase } from "../../../supabase";
+import { supabase } from "../../../utils/supabase";
 
 export const fetchUserProfileData = async () => {
   try {
@@ -65,14 +65,14 @@ export const updateUserProfileData = async (user_name, updateData) => {
       .select("*");
 
     if (error) {
-      // console.error("Error updating data:", error);
+      console.error("Error updating user profile data:", error);
       return { data: null, error };
     } else {
-      // console.log("Successfully updated data:", data);
+      // console.log("Successfully updating user profile data:", data);
       return { data, error: null };
     }
   } catch (error) {
-    // console.error("An error occurred:", error);
+    console.error("An error updating user profile occurred:", error);
     return { data: null, error };
   }
 };

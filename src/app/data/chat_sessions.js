@@ -1,6 +1,6 @@
 // chat_sessions.js
 import React, { useEffect, useState } from "react";
-import { supabase } from "../../../supabase";
+import { supabase } from "../../../utils/supabase";
 import { fetchUserProfileData } from "./user_profiles";
 
 export const useRealTimeSession = (localUsername) => {
@@ -87,6 +87,9 @@ export const fetchChatSessionData = async (user_id) => {
 };
 
 export const updateChatSessionData = async (rowId, updateData) => {
+  // console.log("rowId", rowId);
+  // console.log("updateData", updateData);
+
   try {
     const { data, error } = await supabase
       .from("chat_sessions")
@@ -95,14 +98,14 @@ export const updateChatSessionData = async (rowId, updateData) => {
       .select("*");
 
     if (error) {
-      console.error("Error updating data:", error);
+      console.error("Error updating chat session data:", error);
       return { data: null, error };
     } else {
-      // console.log("Successfully updated data:", data);
+      console.log("Successfully updating chat session data:", data);
       return { data, error: null };
     }
   } catch (error) {
-    console.error("An error occurred:", error);
+    console.error("An error chat updating session occurred:", error);
     return { data: null, error };
   }
 };

@@ -4,4 +4,4 @@ const DeleteSession = async (rowId) => {
   await deleteChatSessionData(rowId);
 };
 
-export default UpdateSession;
+export default DeleteSession;

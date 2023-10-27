@@ -10,6 +10,7 @@ const UpdateUserSearching = async (isSearching) => {
   };
 
   await updateUserProfileData(user_name, updateData);
+  // await updateUserProfileData(user_id, updateData);
 };
 
 export default UpdateUserSearching;
