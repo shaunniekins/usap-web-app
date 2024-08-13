@@ -1,0 +1,47 @@
+what im trying to fix:
+- example:
+user with id 1, user with id 2, and user with id 3 starts searching, then user 1 and user 2 was paired up while user 3 is still searching. then, user 1 and user 2 start chatting, however user 1 decided to leave the conversation with user 2, so the user 1 was go back to the "START SEARCHING" view and connection of user 1 is false now, while user 2 is still in the convo view (user 2 does not yet left the convo chat with user 1). then, user 1 decided to start searching then paired up with another user which is user 3. then user 1 and 3 started chatting now. then, the problem arise, the user 2 decided to leave the past convo they had with user1, after leaving user 2 was back to the "START SEARCHING" view and it affects the user1 which it make the partnerConnected to false, in which a problem because user 1 and user 3 is chatting and no one leaves between the user 1 and 3.
+
+temporary solution i did: 
+- adding this "payload.new.user1_connection && payload.new.user2_connection && ..." however, it wont update the chat session id if the user is not connected and the messages will not be deleted accordingly
+
+const handleUpdate = (payload: any) => {
+    try {
+      if (
+        userId !== null &&
+        payload.new.user1_connection &&
+        payload.new.user2_connection &&
+        (payload.new.user1_id === userId || payload.new.user2_id === userId)
+      ) {
+        // console.log("UPDATE payload:", payload);
+        if (payload.new.user1_id === userId) {
+          setUser(1);
+          setPartnerConnected(payload.new.user2_connection);
+          if (!payload.new.user1_connection) {
+            handleLeave();
+            return;
+          }
+        } else if (payload.new.user2_id === userId) {
+          setUser(2);
+          setPartnerConnected(payload.new.user1_connection);
+          if (!payload.new.user2_connection) {
+            handleLeave();
+            return;
+          }
+        }
+
+        setChatSessionId(payload.new.id);
+        if (currentAction !== "chat") {
+          setCurrentAction("chat");
+          // setConnectionFound(true);
+        }
+
+        // Check if both users have left
+        if (!payload.new.user1_connection && !payload.new.user2_connection) {
+          handleLeave();
+        }
+      }
+    } catch (error) {
+      console.error("Error handling UPDATE event:", error);
+    }
+  };
