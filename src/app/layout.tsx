@@ -13,7 +13,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        <main className="min-h-screen flex flex-col items-center bg-theme">
+          {children}
+        </main>
+      </body>
     </html>
   );
 }

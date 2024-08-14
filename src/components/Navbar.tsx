@@ -2,7 +2,7 @@ import Image from "next/image";
 
 const Navbar = () => {
   return (
-    <div className="top-0 absolute bg-white w-full flex justify-center items-center shadow-lg">
+    <div className="w-screen top-0 absolute bg-theme flex justify-center items-center shadow-md">
       <Image
         src="/usap-with-name-logo.png"
         priority

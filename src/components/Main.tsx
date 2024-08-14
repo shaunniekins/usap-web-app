@@ -269,7 +269,7 @@ const MainComponent = () => {
   }, [messages]);
 
   return (
-    <div className="h-[100svh] w-screen flex items-center justify-center">
+    <div className="h-[100svh] w-screen flex items-center justify-center relative max-w-3xl bg-theme">
       {currentAction === "search" ? (
         <div className="h-full w-full flex flex-col items-center">
           <div className="top-5 left-5 absolute">
@@ -296,10 +296,10 @@ const MainComponent = () => {
           </div>
         </div>
       ) : currentAction === "chat" ? (
-        <div className="w-full h-full flex flex-col items-center p-3 gap-3 bg-purple-50">
+        <div className="w-full h-full flex flex-col items-center p-3 gap-3">
           <Navbar />
           <div className="h-full w-full flex flex-col justify-end overflow-y-auto text-black mt-20">
-            <p className="text-gray-900 text-sm text-center font-semibold">
+            <p className="text-theme text-sm text-center font-semibold">
               You&apos;re chatting with someone. Say hi!
             </p>
             <div
@@ -314,10 +314,8 @@ const MainComponent = () => {
                   }`}
                 >
                   <p
-                    className={`inline-block max-w-[70%] px-5 py-2 rounded-full break-words ${
-                      message.user_id === userId
-                        ? "bg-purple-200"
-                        : "bg-gray-100"
+                    className={`inline-block max-w-[70%] px-4 py-2 rounded-full break-words ${
+                      message.user_id === userId ? "purple-theme" : "gray-theme"
                     }`}
                   >
                     {message.content}
@@ -326,12 +324,12 @@ const MainComponent = () => {
               ))}
             </div>
             {!partnerConnected && (
-              <p className="text-gray-400 text-sm text-center font-semibold">
+              <p className="text-theme text-sm text-center font-semibold">
                 Your partner has left the chat.
               </p>
             )}
           </div>
-          <div className="w-full flex items-center gap-3">
+          <div className="w-full flex items-center gap-3 mb-5">
             <div className="w-full h-12">
               {!partnerConnected ? (
                 <button
@@ -344,7 +342,7 @@ const MainComponent = () => {
                 </button>
               ) : (
                 <textarea
-                  className="w-full text-black px-2 py-3 rounded-lg border resize-none"
+                  className="w-full px-4 py-3 rounded-3xl resize-none appearance-none focus:outline-none shadow-md text-area-theme"
                   value={messageContent}
                   onChange={(e) => setMessageContent(e.target.value)}
                   placeholder="Type your message here..."
@@ -354,27 +352,22 @@ const MainComponent = () => {
               )}
             </div>
 
-            {!(messageContent === "" || !partnerConnected) && (
-              <button
-                className="h-full w-20 bg-purple-700 text-white px-6 rounded-lg"
-                onClick={handleSendMessage}
-              >
-                Send
-              </button>
-            )}
-
-            {messageContent === "" && partnerConnected && (
-              <button
-                className="h-full w-20 bg-red-700 text-white text-sm px-6 rounded-lg"
-                onClick={() => {
+            <button
+              className={`h-full w-20 text-black rounded-full shadow-md button-theme ${
+                messageContent === "" ? "bg-red-200 text-sm" : "text-purple-600"
+              }`}
+              onClick={() => {
+                if (messageContent === "") {
                   if (window.confirm("Are you sure you want to leave?")) {
                     handleLeave();
                   }
-                }}
-              >
-                Leave
-              </button>
-            )}
+                } else {
+                  handleSendMessage();
+                }
+              }}
+            >
+              {messageContent === "" ? "STOP" : "SEND"}
+            </button>
           </div>
         </div>
       ) : (
