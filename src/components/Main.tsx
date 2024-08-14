@@ -5,7 +5,7 @@
 import { addToQueue, checkIdInQueue, deleteFromQueue } from "@/api/userQueue";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
-import { supabase } from "../../../utils/supabase";
+import { supabase } from "../../utils/supabase";
 import { fetchMessages, sendMessage } from "@/api/messages";
 import {
   deleteChatSession,
@@ -162,10 +162,11 @@ const MainComponent = () => {
         await updateSessionUser2(userId, false);
       }
 
-      setCurrentAction("none");
       setChatSessionId(null);
       setMessages([]);
       setUser(null);
+
+      startSearch();
 
       if (!partnerConnected) {
         await deleteChatSession(chatSessionId);
@@ -337,7 +338,6 @@ const MainComponent = () => {
                   className="h-full w-full bg-blue-700 text-white text-sm px-6 rounded-lg"
                   onClick={() => {
                     handleLeave();
-                    startSearch();
                   }}
                 >
                   New Chat
