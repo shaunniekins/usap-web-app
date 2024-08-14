@@ -73,38 +73,6 @@ const MainComponent = () => {
     fetchAndSetAction();
   }, [userId]);
 
-  // Handle connection checks
-  useEffect(() => {
-    if (userId) {
-      const channel = supabase
-        .channel("chat_sessions")
-        .on(
-          "postgres_changes",
-          {
-            event: "*",
-            schema: "public",
-            table: "chat_sessions",
-          },
-          (payload) => {
-            if (payload.eventType === "INSERT") {
-              handleInsert(payload);
-            } else if (payload.eventType === "UPDATE") {
-              handleUpdate(payload);
-            }
-          }
-        )
-        .subscribe((status) => {
-          if (status !== "SUBSCRIBED") {
-            console.error("Error subscribing to channel:", status);
-          }
-        });
-
-      return () => {
-        supabase.removeChannel(channel);
-      };
-    }
-  }, [userId]);
-
   const startSearch = async () => {
     if (userId) {
       const userExists = await checkIdInQueue(userId);
@@ -205,6 +173,38 @@ const MainComponent = () => {
     }
   }, [userId, user, chatSessionId, partnerConnected]);
 
+  // Handle connection checks
+  useEffect(() => {
+    if (userId) {
+      const channel = supabase
+        .channel("chat_sessions")
+        .on(
+          "postgres_changes",
+          {
+            event: "*",
+            schema: "public",
+            table: "chat_sessions",
+          },
+          (payload) => {
+            if (payload.eventType === "INSERT") {
+              handleInsert(payload);
+            } else if (payload.eventType === "UPDATE") {
+              handleUpdate(payload);
+            }
+          }
+        )
+        .subscribe((status) => {
+          if (status !== "SUBSCRIBED") {
+            console.error("Error subscribing to channel:", status);
+          }
+        });
+
+      return () => {
+        supabase.removeChannel(channel);
+      };
+    }
+  }, [userId, handleInsert, handleUpdate]);
+
   // messages
 
   const handleSendMessage = async () => {
@@ -299,7 +299,7 @@ const MainComponent = () => {
           <Navbar />
           <div className="h-full w-full flex flex-col justify-end overflow-y-auto text-black mt-20">
             <p className="text-gray-900 text-sm text-center font-semibold">
-              You're chatting with someone. Say hi!
+              You&apos;re chatting with someone. Say hi!
             </p>
             <div
               ref={messageContainerRef}
