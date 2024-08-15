@@ -14,11 +14,11 @@ import {
   updateSessionUser2,
 } from "@/api/chatSession";
 import SearchingText from "./SearchingText";
-import { AiFillHeart } from "react-icons/ai";
-import Image from "next/image";
 import Navbar from "./Navbar";
 import { useTypingIndicator } from "./hooks/useTypingIndicator";
 import TypingIndicatorDots from "./TypingIndicatorDots";
+import { MdOutlineHandshake } from "react-icons/md";
+import Modal from "./ModalPoliciesConfirm";
 
 const MainComponent = () => {
   const [currentAction, setCurrentAction] = useState<
@@ -162,25 +162,32 @@ const MainComponent = () => {
     }
   };
 
-  const handleLeave = useCallback(async () => {
-    if (userId && user && chatSessionId) {
-      if (user === 1) {
-        await updateSessionUser1(userId, false);
-      } else if (user === 2) {
-        await updateSessionUser2(userId, false);
+  const handleLeave = useCallback(
+    async (isHome: boolean = false) => {
+      if (userId && user && chatSessionId) {
+        if (user === 1) {
+          await updateSessionUser1(userId, false);
+        } else if (user === 2) {
+          await updateSessionUser2(userId, false);
+        }
+
+        setChatSessionId(null);
+        setMessages([]);
+        setUser(null);
+
+        if (isHome) {
+          setCurrentAction("none");
+        } else {
+          startSearch();
+        }
+
+        if (!partnerConnected) {
+          await deleteChatSession(chatSessionId);
+        }
       }
-
-      setChatSessionId(null);
-      setMessages([]);
-      setUser(null);
-
-      startSearch();
-
-      if (!partnerConnected) {
-        await deleteChatSession(chatSessionId);
-      }
-    }
-  }, [userId, user, chatSessionId, partnerConnected]);
+    },
+    [userId, user, chatSessionId, partnerConnected, startSearch]
+  );
 
   // Handle connection checks
   useEffect(() => {
@@ -280,8 +287,34 @@ const MainComponent = () => {
     setIsPartnerTyping(isTyping);
   }, [isTyping]);
 
+  const handleNavbarLeave = () => {
+    handleLeave(true);
+  };
+
+  // legal policies modal
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  useEffect(() => {
+    const hasConfirmed = localStorage.getItem("userConfirmed");
+    if (hasConfirmed === "true") {
+      setIsModalOpen(false);
+    } else {
+      setIsModalOpen(true);
+    }
+  }, []);
+
+  const handleModalConfirm = () => {
+    localStorage.setItem("userConfirmed", "true");
+    setIsModalOpen(false);
+  };
+
   return (
-    <div className="h-[100svh] w-screen flex items-center justify-center relative max-w-3xl bg-theme">
+    <div className="screen-container">
+      <Modal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onConfirm={handleModalConfirm}
+      />
       {currentAction === "search" ? (
         <div className="h-full w-full flex flex-col items-center">
           <div className="top-5 left-5 absolute">
@@ -309,7 +342,11 @@ const MainComponent = () => {
         </div>
       ) : currentAction === "chat" ? (
         <div className="w-full h-full flex flex-col items-center p-3 gap-3">
-          <Navbar />
+          <Navbar
+            onLeave={handleNavbarLeave}
+            partnerConnected={partnerConnected}
+          />
+
           <div className="h-full w-full flex flex-col justify-end overflow-y-auto text-black mt-20">
             <p className="text-theme text-sm text-center font-semibold">
               You&apos;re chatting with someone. Say hi!
@@ -391,13 +428,13 @@ const MainComponent = () => {
         </div>
       ) : (
         <div className="h-full w-full flex flex-col items-center">
-          <Navbar />
+          <Navbar callFeature={true} />
           <div className="h-full flex justify-center items-center">
             <button
-              className="p-5 bg-purple-700 text-white rounded-full"
+              className="p-5 bg-purple-700 rounded-full overflow-hidden shadow-xl shadow-purple-500 drop-shadow-2xl active:scale-95 active:shadow-lg"
               onClick={startSearch}
             >
-              <AiFillHeart size={130} color="white" />
+              <MdOutlineHandshake size={130} color="white" />
             </button>
           </div>
           <p className="text-gray-400 text-sm bottom-16 absolute">

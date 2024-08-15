@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap");
 
 @tailwind base;
 @tailwind components;
@@ -35,7 +35,7 @@
 }
 
 .pulseCircle1 {
-    animation: pulseCircle 6s infinite;
+  animation: pulseCircle 6s infinite;
 }
 
 .pulseCircle2 {
@@ -43,16 +43,7 @@
 }
 
 .pulseCircle3 {
-    animation: pulseCircle 1.2s infinite;
-  }
-
-.morph {
-  transition: transform 0.3s ease-in-out;
-  transform-origin: center center;
-}
-
-.morph-active {
-  transform: scale(1.2);
+  animation: pulseCircle 1.2s infinite;
 }
 
 @layer base {
@@ -61,26 +52,30 @@
   }
 }
 
+.screen-container {
+  @apply h-[100dvh] w-screen flex items-center justify-center relative max-w-3xl bg-theme
+}
+
 .bg-theme {
-  @apply bg-white dark:bg-[#202124]
+  @apply bg-white text-black dark:bg-[#202124] dark:text-white;
 }
 
 .purple-theme {
-  @apply bg-purple-200 dark:bg-purple-500
+  @apply bg-purple-200 dark:bg-purple-500;
 }
 
 .gray-theme {
-  @apply bg-gray-100 dark:bg-[#303030] dark:text-white
+  @apply bg-gray-100 dark:bg-[#303030] dark:text-white;
 }
 
 .text-area-theme {
-  @apply text-gray-800 border dark:bg-[#3C4043] dark:text-white dark:border-none
+  @apply text-gray-800 border dark:bg-[#3C4043] dark:text-white dark:border-none;
 }
 
 .text-theme {
-  @apply text-gray-400 dark:text-gray-400
+  @apply text-gray-400 dark:text-gray-400;
 }
 
 .button-theme {
-  @apply border dark:border-none
+  @apply border dark:border-none;
 }

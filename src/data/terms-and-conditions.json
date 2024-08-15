@@ -1,0 +1,91 @@
+{
+  "title": "Terms and Conditions",
+  "lastUpdated": "August 15, 2024",
+  "sections": [
+    {
+      "id": "acceptance-of-terms",
+      "title": "1. Acceptance of Terms",
+      "content": "By using Usap, you agree to these Terms and Conditions. If you do not agree, please do not use our web application."
+    },
+    {
+      "id": "service-description",
+      "title": "2. Service Description",
+      "content": "Usap provides a platform for anonymous chatting with random strangers. You may use the service to engage in text-based conversations with other users."
+    },
+    {
+      "id": "user-responsibilities",
+      "title": "3. User Responsibilities",
+      "points": [
+        {
+          "title": "Eligibility",
+          "description": "You must be at least 13 years old to use Usap."
+        },
+        {
+          "title": "Behavior",
+          "description": "You agree not to use the service for any unlawful or harmful purposes. This includes, but is not limited to, harassment, spam, and illegal activities."
+        },
+        {
+          "title": "Content",
+          "description": "You are responsible for the content you send and receive during chat sessions. We do not monitor or moderate chats and are not liable for the content shared."
+        }
+      ]
+    },
+    {
+      "id": "account-and-data-management",
+      "title": "4. Account and Data Management",
+      "points": [
+        {
+          "title": "User ID",
+          "description": "Your user ID is stored in local storage and used to manage your chat sessions. You are responsible for maintaining the confidentiality of your user ID."
+        },
+        {
+          "title": "Data Handling",
+          "description": "We handle your data in accordance with our Privacy Policy. By using Usap, you consent to the collection and processing of your data as described in the Privacy Policy."
+        }
+      ]
+    },
+    {
+      "id": "service-availability",
+      "title": "5. Service Availability",
+      "points": [
+        {
+          "title": "Interruption",
+          "description": "Usap may experience downtime or interruptions. We make no guarantees regarding the availability or reliability of the service."
+        },
+        {
+          "title": "Termination",
+          "description": "We reserve the right to suspend or terminate your access to Usap if you violate these Terms and Conditions."
+        }
+      ]
+    },
+    {
+      "id": "limitation-of-liability",
+      "title": "6. Limitation of Liability",
+      "points": [
+        {
+          "title": "No Warranty",
+          "description": "Usap is provided 'as is' without warranties of any kind. We are not liable for any damages arising from your use of the service, including but not limited to loss of data or interruptions in service."
+        },
+        {
+          "title": "Indirect Damages",
+          "description": "We are not responsible for any indirect, incidental, or consequential damages related to the use of Usap."
+        }
+      ]
+    },
+    {
+      "id": "changes-to-terms",
+      "title": "7. Changes to Terms",
+      "content": "We may update these Terms and Conditions from time to time. Your continued use of Usap after any changes indicates your acceptance of the new terms."
+    },
+    {
+      "id": "governing-law",
+      "title": "8. Governing Law",
+      "content": "These Terms and Conditions are governed by the laws of the jurisdiction in which Usap operates. Any disputes arising from these terms shall be resolved in the courts of that jurisdiction."
+    },
+    {
+      "id": "contact-us",
+      "title": "9. Contact Us",
+      "content": "For any questions regarding these Terms and Conditions, please contact us at support@usapapp.com."
+    }
+  ]
+}

@@ -1,33 +1,21 @@
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 
-interface NavbarProps {
+interface AltNavbarProps {
   onLeave?: () => void;
   partnerConnected?: boolean;
   callFeature?: boolean;
 }
 
-const Navbar = ({ onLeave, partnerConnected, callFeature }: NavbarProps) => {
+const AltNavbar = ({
+  onLeave,
+  partnerConnected,
+  callFeature,
+}: AltNavbarProps) => {
   const router = useRouter();
   return (
     <div className="w-screen top-0 absolute bg-theme flex justify-center items-center shadow-md">
-      <button
-        onClick={() => {
-          if (onLeave) {
-            if (
-              !partnerConnected ||
-              window.confirm("Are you sure you want to leave?")
-            ) {
-              onLeave();
-            }
-            return;
-          }
-
-          if (callFeature) {
-            router.push("/featured");
-          }
-        }}
-      >
+      <button onClick={() => router.push("/")}>
         <Image
           src="/usap-with-name-logo.png"
           priority
@@ -40,4 +28,4 @@ const Navbar = ({ onLeave, partnerConnected, callFeature }: NavbarProps) => {
   );
 };
 
-export default Navbar;
+export default AltNavbar;

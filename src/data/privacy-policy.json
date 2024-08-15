@@ -1,0 +1,91 @@
+{
+  "title": "Privacy Policy",
+  "lastUpdated": "August 15, 2024",
+  "sections": [
+    {
+      "id": "introduction",
+      "title": "1. Introduction",
+      "content": "Welcome to Usap! We are committed to protecting your privacy. This Privacy Policy explains how we collect, use, and safeguard your information when you use our web application."
+    },
+    {
+      "id": "information-we-collect",
+      "title": "2. Information We Collect",
+      "points": [
+        {
+          "title": "Personal Information",
+          "description": "We collect a unique user ID, which is stored in your local storage and used to identify you during your session."
+        },
+        {
+          "title": "Chat Data",
+          "description": "We store messages sent during your chat sessions and the details of your chat sessions, including user IDs and connection statuses."
+        }
+      ]
+    },
+    {
+      "id": "how-we-use-your-information",
+      "title": "3. How We Use Your Information",
+      "points": [
+        {
+          "title": "Session Management",
+          "description": "We use your user ID to manage chat sessions, including pairing you with a random stranger and managing session connections."
+        },
+        {
+          "title": "Message Handling",
+          "description": "We use your messages to facilitate communication between you and your chat partner."
+        },
+        {
+          "title": "Queue Management",
+          "description": "We track users in the queue to ensure you are paired with a random stranger when starting a new chat."
+        }
+      ]
+    },
+    {
+      "id": "data-storage-and-security",
+      "title": "4. Data Storage and Security",
+      "points": [
+        {
+          "title": "Local Storage",
+          "description": "We store your user ID in local storage to persist your session information."
+        },
+        {
+          "title": "Supabase",
+          "description": "We use Supabase to store chat sessions and messages securely. Supabase provides encryption and security measures to protect your data."
+        }
+      ]
+    },
+    {
+      "id": "sharing-your-information",
+      "title": "5. Sharing Your Information",
+      "content": "We do not share your personal information or chat content with third parties. All data is stored and processed within our application."
+    },
+    {
+      "id": "data-retention",
+      "title": "6. Data Retention",
+      "content": "We retain chat sessions and messages only as long as necessary to provide the chat service. Sessions are deleted when both users have left the chat or the session is otherwise terminated."
+    },
+    {
+      "id": "your-rights",
+      "title": "7. Your Rights",
+      "points": [
+        {
+          "title": "Access and Update",
+          "description": "You can access and update your user ID through your browser's local storage."
+        },
+        {
+          "title": "Deletion",
+          "description": "You can request the deletion of your data by leaving the chat session and clearing your local storage."
+        }
+      ]
+    },
+    {
+      "id": "changes-to-this-policy",
+      "title": "8. Changes to This Policy",
+      "content": "We may update this Privacy Policy from time to time. We will notify you of any changes by posting the new policy on our website."
+    },
+    {
+      "id": "contact-us",
+      "title": "9. Contact Us",
+      "content": "If you have any questions about this Privacy Policy, please contact us at support@usapapp.com."
+    }
+  ]
+}
