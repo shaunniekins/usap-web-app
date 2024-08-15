@@ -14,7 +14,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <main className="min-h-screen flex flex-col items-center bg-theme">
+        <main className="min-h-screen flex flex-col items-center bg-theme font-sub">
           {children}
         </main>
       </body>

@@ -348,7 +348,7 @@ const MainComponent = () => {
           />
 
           <div className="h-full w-full flex flex-col justify-end overflow-y-auto text-black mt-20">
-            <p className="text-theme text-sm text-center font-semibold">
+            <p className="text-theme text-sm text-center font-semibold mb-5">
               You&apos;re chatting with someone. Say hi!
             </p>
             <div
@@ -379,7 +379,7 @@ const MainComponent = () => {
             )}
 
             {!partnerConnected && (
-              <p className="text-theme text-sm text-center font-semibold">
+              <p className="text-theme text-xs text-center font-semibold mt-8">
                 Your partner has left the chat.
               </p>
             )}
@@ -408,22 +408,26 @@ const MainComponent = () => {
               )}
             </div>
 
-            <button
-              className={`h-full w-20 text-black rounded-full shadow-md button-theme ${
-                messageContent === "" ? "bg-red-200 text-sm" : "text-purple-600"
-              }`}
-              onClick={() => {
-                if (messageContent === "") {
-                  if (window.confirm("Are you sure you want to leave?")) {
-                    handleLeave();
+            {partnerConnected && (
+              <button
+                className={`h-full w-20 text-black rounded-full shadow-md button-theme ${
+                  messageContent === ""
+                    ? "bg-red-200 text-sm"
+                    : "text-purple-600"
+                }`}
+                onClick={() => {
+                  if (messageContent === "") {
+                    if (window.confirm("Are you sure you want to leave?")) {
+                      handleLeave();
+                    }
+                  } else {
+                    handleSendMessage();
                   }
-                } else {
-                  handleSendMessage();
-                }
-              }}
-            >
-              {messageContent === "" ? "STOP" : "SEND"}
-            </button>
+                }}
+              >
+                {messageContent === "" ? "STOP" : "SEND"}
+              </button>
+            )}
           </div>
         </div>
       ) : (
