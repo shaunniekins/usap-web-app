@@ -17,6 +17,8 @@ import SearchingText from "./SearchingText";
 import { AiFillHeart } from "react-icons/ai";
 import Image from "next/image";
 import Navbar from "./Navbar";
+import { useTypingIndicator } from "./hooks/useTypingIndicator";
+import TypingIndicatorDots from "./TypingIndicatorDots";
 
 const MainComponent = () => {
   const [currentAction, setCurrentAction] = useState<
@@ -28,6 +30,12 @@ const MainComponent = () => {
   const [messageContent, setMessageContent] = useState("");
   const [user, setUser] = useState<number | null>(null);
   const [partnerConnected, setPartnerConnected] = useState(true);
+
+  const [isPartnerTyping, setIsPartnerTyping] = useState(false);
+  const { isTyping, sendTypingEvent } = useTypingIndicator({
+    roomId: chatSessionId?.toString() || "",
+    userId: userId || "",
+  });
 
   useEffect(() => {
     // Check if userId exists in localStorage, if not, create and store it
@@ -268,6 +276,10 @@ const MainComponent = () => {
     scrollToBottom();
   }, [messages]);
 
+  useEffect(() => {
+    setIsPartnerTyping(isTyping);
+  }, [isTyping]);
+
   return (
     <div className="h-[100svh] w-screen flex items-center justify-center relative max-w-3xl bg-theme">
       {currentAction === "search" ? (
@@ -323,6 +335,12 @@ const MainComponent = () => {
                 </div>
               ))}
             </div>
+            {isPartnerTyping && partnerConnected && (
+              <p className="text-sm text-gray-500 italic">
+                <TypingIndicatorDots />
+              </p>
+            )}
+
             {!partnerConnected && (
               <p className="text-theme text-sm text-center font-semibold">
                 Your partner has left the chat.
@@ -345,6 +363,7 @@ const MainComponent = () => {
                   className="w-full px-4 py-3 rounded-3xl resize-none appearance-none focus:outline-none shadow-md text-area-theme"
                   value={messageContent}
                   onChange={(e) => setMessageContent(e.target.value)}
+                  onKeyDown={sendTypingEvent}
                   placeholder="Type your message here..."
                   disabled={!partnerConnected}
                   rows={1}
