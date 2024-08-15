@@ -317,9 +317,9 @@ const MainComponent = () => {
       />
       {currentAction === "search" ? (
         <div className="h-full w-full flex flex-col items-center">
-          <div className="top-5 left-5 absolute">
+          <div className="top-0 left-0 absolute">
             <button
-              className="text-sm text-gray-400"
+              className="text-sm text-gray-400 pt-5 pl-5 pb-8 pr-8"
               onClick={() => {
                 setCurrentAction("none");
                 userId && deleteFromQueue(userId);
