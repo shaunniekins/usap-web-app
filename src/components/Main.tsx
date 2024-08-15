@@ -384,7 +384,7 @@ const MainComponent = () => {
               </p>
             )}
           </div>
-          <div className="w-full flex items-center gap-3 mb-5">
+          <div className="w-full flex items-center gap-3 md:mb-5">
             <div className="w-full h-12">
               {!partnerConnected ? (
                 <button
