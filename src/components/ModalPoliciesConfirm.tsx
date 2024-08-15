@@ -28,7 +28,7 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, onConfirm }) => {
       >
         <div className="text-xl font-semibold mb-4">Confirmation</div>
         <div className="mb-4">
-          By clicking "Confirm," you acknowledge that you have read and accepted
+          By clicking &quot;Confirm,&quot; you acknowledge that you have read and accepted
           the
           <a
             href="/privacy-policy"
