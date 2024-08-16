@@ -21,7 +21,7 @@ const TypingIndicatorDots = () => {
     };
   }, []);
 
-  return <div className="text-gray-400 text-3xl h-10 pl-2">{dots}</div>;
+  return <p className="text-gray-400 text-3xl h-10 pl-2">{dots}</p>;
 };
 
 export default TypingIndicatorDots;

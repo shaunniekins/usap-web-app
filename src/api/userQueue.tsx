@@ -1,4 +1,4 @@
-import { supabase } from "../../utils/supabase";
+import { supabase } from "../utils/supabase";
 
 export const checkIdInQueue = async (userID: string) => {
   const { data: existingUser, error } = await supabase

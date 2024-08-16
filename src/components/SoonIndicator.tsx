@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 
 const SoonIndicatorSoon = () => {
   const [text, setText] = useState("");
-  const fullText = "S O O N";
+  const fullText = "S O O N ...";
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -15,7 +15,7 @@ const SoonIndicatorSoon = () => {
           return fullText.slice(0, prevText.length + 1);
         }
       });
-    }, 300);
+    }, 200);
 
     return () => {
       clearInterval(interval);
