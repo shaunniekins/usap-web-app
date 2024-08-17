@@ -1,6 +1,7 @@
 "use client";
 
 import { deleteFromQueue } from "@/api/userQueue";
+import { LoadingScreen } from "@/components/Loading";
 import SearchingText from "@/components/SearchingText";
 import { useSessionCheck } from "@/hooks/useSessionCheck";
 import { useRouter } from "next/navigation";
@@ -8,6 +9,10 @@ import { useRouter } from "next/navigation";
 export default function Search() {
   const router = useRouter();
   const userId = useSessionCheck();
+
+  if (!userId) {
+    return <LoadingScreen />;
+  }
 
   return (
     <div className="screen-container">

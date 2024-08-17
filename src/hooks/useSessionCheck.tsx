@@ -69,8 +69,10 @@ export const useSessionCheck = () => {
               (payload.eventType === "INSERT" ||
                 payload.eventType === "UPDATE") &&
               userId !== null &&
-              (payload.new.user1_id === userId ||
-                payload.new.user2_id === userId)
+              ((payload.new.user1_id === userId &&
+                payload.new.user1_connection) ||
+                (payload.new.user2_id === userId &&
+                  payload.new.user2_connection))
             ) {
               router.push("/chat");
             }

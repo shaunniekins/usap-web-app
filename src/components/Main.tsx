@@ -9,6 +9,7 @@ import Modal from "./ModalPoliciesConfirm";
 import { useRouter } from "next/navigation";
 import startSearch from "@/utils/searchService";
 import { useSessionCheck } from "@/hooks/useSessionCheck";
+import { LoadingScreen } from "./Loading";
 
 const MainComponent = () => {
   const router = useRouter();
@@ -18,6 +19,10 @@ const MainComponent = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
+    if ("Notification" in window) {
+      Notification.requestPermission();
+    }
+
     const hasConfirmed = localStorage.getItem("userConfirmed");
     if (hasConfirmed === "true") {
       setIsModalOpen(false);
@@ -30,6 +35,10 @@ const MainComponent = () => {
     localStorage.setItem("userConfirmed", "true");
     setIsModalOpen(false);
   };
+
+  if (!userId) {
+    return <LoadingScreen />;
+  }
 
   return (
     <div className="screen-container">

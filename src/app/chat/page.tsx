@@ -15,6 +15,7 @@ import {
 } from "@/api/chatSession";
 import startSearch from "@/utils/searchService";
 import { useSessionCheck } from "@/hooks/useSessionCheck";
+import { LoadingScreen } from "@/components/Loading";
 
 export default function Search() {
   const router = useRouter();
@@ -198,6 +199,8 @@ export default function Search() {
           (payload) => {
             if (payload.new.chat_session_id === chatSessionId) {
               setMessages((messages) => [...messages, payload.new]);
+              if (payload.new.user_id !== userId) playNotificationSound();
+              showBrowserNotification(payload.new);
             }
           }
         )
@@ -211,15 +214,11 @@ export default function Search() {
 
   const messageContainerRef = useRef<HTMLDivElement>(null);
 
-  const scrollToBottom = () => {
+  useEffect(() => {
     if (messageContainerRef.current) {
       messageContainerRef.current.scrollTop =
         messageContainerRef.current.scrollHeight;
     }
-  };
-
-  useEffect(() => {
-    scrollToBottom();
   }, [messages]);
 
   useEffect(() => {
@@ -229,6 +228,26 @@ export default function Search() {
   const handleNavbarLeave = () => {
     handleLeave(true);
   };
+
+  // notification
+  const playNotificationSound = () => {
+    const audio = new Audio("/message-pop.mp3");
+    audio.play();
+  };
+
+  const showBrowserNotification = (message: any) => {
+    if (
+      "Notification" in window &&
+      Notification.permission === "granted" &&
+      !document.hasFocus()
+    ) {
+      new Notification("New Message", { body: message.content });
+    }
+  };
+
+  if (!userId) {
+    return <LoadingScreen />;
+  }
 
   return (
     <div className="screen-container">
