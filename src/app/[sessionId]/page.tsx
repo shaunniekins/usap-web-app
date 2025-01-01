@@ -10,6 +10,7 @@ import {
   deleteChatSession,
   getUserByUUID,
   endSession,
+  updateTypingStatus,
 } from "@/lib/firebase";
 import {
   collection,
@@ -18,8 +19,9 @@ import {
   where,
   onSnapshot,
 } from "firebase/firestore";
-import { ChatSession, Message } from "@/types";
+import { ChatSession, Message, User } from "@/types";
 import Navbar from "@/components/Navbar";
+import TypingIndicatorDots from "@/components/TypingIndicatorDots";
 
 export default function Session({
   params,
@@ -31,6 +33,8 @@ export default function Session({
   const [newMessage, setNewMessage] = useState("");
   const [isPartnerLeft, setIsPartnerLeft] = useState(false);
   const [isCurrentUserLeft, setIsCurrentUserLeft] = useState(false);
+  const [isPartnerTyping, setIsPartnerTyping] = useState(false);
+  const typingTimeoutRef = useRef<NodeJS.Timeout | undefined>(undefined);
   const resolvedParams = React.use(params);
   const sessionId = resolvedParams.sessionId;
   const uuid =
@@ -89,9 +93,28 @@ export default function Session({
       );
     });
 
+    const usersRef = collection(db, "users");
+    const unsubscribeTyping = onSnapshot(
+      query(usersRef, where("current_session", "==", sessionId)),
+      (snapshot) => {
+        const users = snapshot.docs.map(
+          (doc) =>
+            ({
+              id: doc.id,
+              ...doc.data(),
+            } as User & { id: string })
+        );
+        const partner = users.find((user) => user.uuid !== uuid);
+        if (partner) {
+          setIsPartnerTyping(partner.is_typing || false);
+        }
+      }
+    );
+
     return () => {
       unsubscribe();
       unsubscribeMessages();
+      unsubscribeTyping();
     };
   }, [sessionId, uuid, router]);
 
@@ -117,6 +140,25 @@ export default function Session({
       content: newMessage,
       timestamp: new Date(), // This will be automatically converted to Firestore timestamp
     });
+  };
+
+  const handleTyping = async () => {
+    if (!uuid) return;
+
+    const user = await getUserByUUID(uuid);
+    if (user) {
+      await updateTypingStatus(user.id, true);
+
+      // Clear existing timeout
+      if (typingTimeoutRef.current) {
+        clearTimeout(typingTimeoutRef.current);
+      }
+
+      // Set new timeout
+      typingTimeoutRef.current = setTimeout(async () => {
+        await updateTypingStatus(user.id, false);
+      }, 1000);
+    }
   };
 
   const messageContainerRef = useRef<HTMLDivElement>(null);
@@ -162,12 +204,11 @@ export default function Session({
               </div>
             ))}
           </div>
-          {/* {isPartnerTyping && partnerConnected && (
-            <p className="text-sm text-gray-500 italic">
+          {isPartnerTyping && !isPartnerLeft && !isCurrentUserLeft && (
+            <div className="flex justify-start mb-2">
               <TypingIndicatorDots />
-            </p>
-          )} */}
-
+            </div>
+          )}
           {(isPartnerLeft || isCurrentUserLeft) && (
             <p className="text-theme text-xs text-center font-semibold mt-8">
               {isCurrentUserLeft
@@ -191,8 +232,10 @@ export default function Session({
               <textarea
                 className="w-full px-4 py-3 rounded-3xl resize-none appearance-none focus:outline-none shadow-md text-area-theme"
                 value={newMessage}
-                onChange={(e) => setNewMessage(e.target.value)}
-                // onKeyDown={sendTypingEvent}
+                onChange={(e) => {
+                  setNewMessage(e.target.value);
+                  handleTyping();
+                }}
                 placeholder="Type your message here..."
                 disabled={isPartnerLeft || isCurrentUserLeft}
                 rows={1}

@@ -16,6 +16,7 @@ import {
   getDocs,
   doc,
   getDoc,
+  runTransaction,
 } from "firebase/firestore";
 import SearchingText from "@/components/SearchingText";
 
@@ -88,52 +89,69 @@ export default function Search() {
           return;
         }
 
-        // Update user's searching status
-        await updateUser(userDoc.id, {
-          is_searching: true,
-          last_seen: new Date(),
-        });
+        // Wrap the pairing logic in a transaction
+        await runTransaction(db, async (transaction) => {
+          // Get fresh user data within transaction
+          const currentUserRef = doc(db, "users", userDoc.id);
+          const currentUserSnap = await transaction.get(currentUserRef);
 
-        // Find other searching users
-        const usersRef = collection(db, "users");
-        const q = query(
-          usersRef,
-          where("is_searching", "==", true),
-          where("uuid", "!=", uuid),
-          where("current_session", "==", null) // Only match users not in a session
-        );
-        const querySnapshot = await getDocs(q);
+          if (!currentUserSnap.exists()) return;
+          const currentUserData = currentUserSnap.data() as User;
 
-        if (!querySnapshot.empty) {
-          const pairedUser = querySnapshot.docs[0];
-
-          // Double-check the paired user's status
-          const freshPairedUser = await getUserByUUID(pairedUser.data().uuid);
+          // If user is already in session or not searching, abort
           if (
-            freshPairedUser?.id &&
-            !freshPairedUser.current_session &&
-            freshPairedUser.is_searching
+            currentUserData.current_session ||
+            !currentUserData.is_searching
           ) {
-            const sessionId = await createChatSession([
-              uuid,
-              pairedUser.data().uuid,
-            ]);
-
-            // Update both users atomically
-            await Promise.all([
-              updateUser(userDoc.id, {
-                is_searching: false,
-                current_session: sessionId,
-              }),
-              updateUser(pairedUser.id, {
-                is_searching: false,
-                current_session: sessionId,
-              }),
-            ]);
-
-            router.push(`/${sessionId}`);
+            return;
           }
-        }
+
+          // Find other searching users
+          const usersRef = collection(db, "users");
+          const q = query(
+            usersRef,
+            where("is_searching", "==", true),
+            where("uuid", "!=", uuid),
+            where("current_session", "==", null)
+          );
+
+          const querySnapshot = await getDocs(q);
+          const availableUser = querySnapshot.docs[0];
+
+          if (availableUser) {
+            // Verify the other user's status within transaction
+            const otherUserRef = doc(db, "users", availableUser.id);
+            const otherUserSnap = await transaction.get(otherUserRef);
+
+            if (!otherUserSnap.exists()) return;
+            const otherUserData = otherUserSnap.data() as User;
+
+            // Double-check the other user is still available
+            if (!otherUserData.current_session && otherUserData.is_searching) {
+              // Create new session
+              const sessionRef = doc(collection(db, "chatSessions"));
+              const sessionData = {
+                users: [uuid, availableUser.data().uuid],
+                created_at: new Date(),
+                active: true,
+              };
+
+              // Update all documents atomically
+              transaction.set(sessionRef, sessionData);
+              transaction.update(currentUserRef, {
+                is_searching: false,
+                current_session: sessionRef.id,
+              });
+              transaction.update(otherUserRef, {
+                is_searching: false,
+                current_session: sessionRef.id,
+              });
+
+              // Navigate after successful transaction
+              router.push(`/${sessionRef.id}`);
+            }
+          }
+        });
       } catch (error) {
         console.error("Error in search:", error);
       }
@@ -153,18 +171,6 @@ export default function Search() {
   }, [uuid, router]);
 
   return (
-    // <div className="flex items-center justify-center h-screen">
-    //   <div className="text-center">
-    //     <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500 mx-auto mb-4"></div>
-    //     <p className="mb-4">Looking for someone to chat with...</p>
-    //     <button
-    //       onClick={handleCancel}
-    //       className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition-colors"
-    //     >
-    //       Cancel
-    //     </button>
-    //   </div>
-    // </div>
     <div className="screen-container">
       <div className="h-full w-full flex flex-col items-center">
         <div className="top-0 left-0 absolute">

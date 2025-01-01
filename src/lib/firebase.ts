@@ -132,3 +132,9 @@ export const deleteMessages = async (sessionId: string) => {
 
   await Promise.all(deletePromises);
 };
+
+// Add this new function
+export const updateTypingStatus = async (userId: string, isTyping: boolean) => {
+  const userRef = doc(db, "users", userId);
+  await updateDoc(userRef, { is_typing: isTyping });
+};

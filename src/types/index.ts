@@ -3,6 +3,7 @@ export interface User {
   is_searching: boolean;
   current_session: string | null; // Changed from optional string to string | null
   last_seen?: Date;
+  is_typing?: boolean; // Add this field
 }
 
 export interface ChatSession {
