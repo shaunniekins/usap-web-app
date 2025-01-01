@@ -1,8 +1,9 @@
 "use client";
 
 import { useState, useEffect, useRef, useCallback } from "react";
-import { db } from "../../../utils/firebase";
+
 import { doc, onSnapshot, setDoc, serverTimestamp } from "firebase/firestore";
+import { db } from "@/lib/firebase";
 
 interface TypingIndicatorProps {
   roomId: string;

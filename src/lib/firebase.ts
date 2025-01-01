@@ -1,4 +1,4 @@
-import { User } from "@/types";
+import { User, ChatSession } from "@/types";
 import { initializeApp } from "firebase/app";
 import {
   getFirestore,
@@ -74,10 +74,13 @@ export const createChatSession = async (userIds: string[]) => {
 };
 
 // Listen to session changes
-export const listenToSession = (sessionId: string, callback: Function) => {
+export const listenToSession = (
+  sessionId: string,
+  callback: (session: ChatSession | undefined) => void
+) => {
   const sessionRef = doc(db, "chatSessions", sessionId);
   return onSnapshot(sessionRef, (doc) => {
-    callback(doc.data());
+    callback(doc.data() as ChatSession | undefined);
   });
 };
 

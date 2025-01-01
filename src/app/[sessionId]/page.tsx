@@ -54,8 +54,9 @@ export default function Session({
 
     const unsubscribe = listenToSession(
       sessionId,
-      async (sessionData: ChatSession) => {
+      (sessionData: ChatSession | undefined) => {
         if (!sessionData) {
+          router.push("/");
           return;
         }
 
@@ -132,54 +133,6 @@ export default function Session({
   }, [messages]);
 
   return (
-    // <div className="p-4">
-    //   {(isPartnerLeft || isCurrentUserLeft) && (
-    //     <div className="bg-red-100 p-2 mb-4 rounded">
-    //       {isCurrentUserLeft
-    //         ? "You have left the chat."
-    //         : "Your partner has left the chat."}
-    //     </div>
-    //   )}
-    //   <div className="h-[60vh] overflow-y-auto mb-4 border rounded p-2">
-    //     {messages.map((msg) => (
-    //       <div
-    //         key={msg.id}
-    //         className={`mb-2 ${msg.sender_id === uuid ? "text-right" : ""}`}
-    //       >
-    //         {msg.content}
-    //       </div>
-    //     ))}
-    //   </div>
-    //   <div className="flex gap-2">
-    //     <input
-    //       className="flex-1 border p-2 rounded"
-    //       value={newMessage}
-    //       onChange={(e) => setNewMessage(e.target.value)}
-    //       disabled={isPartnerLeft || isCurrentUserLeft}
-    //       onKeyPress={(e) => e.key === "Enter" && sendMessage()}
-    //     />
-    //     <button
-    //       onClick={sendMessage}
-    //       disabled={isPartnerLeft || isCurrentUserLeft}
-    //       className="bg-blue-500 text-white px-4 py-2 rounded disabled:bg-gray-300"
-    //     >
-    //       Send
-    //     </button>
-    //     <button
-    //       onClick={handleSearchAgain}
-    //       className="bg-red-500 text-white px-4 py-2 rounded"
-    //     >
-    //       Search Again
-    //     </button>
-    //     <button
-    //       onClick={handleLeave}
-    //       className="bg-red-500 text-white px-4 py-2 rounded"
-    //     >
-    //       Leave
-    //     </button>
-    //   </div>
-    // </div>
-
     <div className="screen-container">
       <div className="w-full h-full flex flex-col items-center p-3 gap-3">
         <Navbar onLeave={handleLeave} partnerConnected={!isPartnerLeft} />
