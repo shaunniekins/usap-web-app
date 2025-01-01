@@ -3,9 +3,10 @@
 import { useRouter } from "next/navigation";
 import { getUserByUUID, createUser, updateUser } from "@/lib/firebase";
 import { v4 as uuidv4 } from "uuid";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Navbar from "@/components/Navbar";
 import { MdOutlineHandshake } from "react-icons/md";
+import ModalPoliciesConfirm from "@/components/ModalPoliciesConfirm";
 
 export default function Home() {
   const router = useRouter();
@@ -56,6 +57,23 @@ export default function Home() {
     router.push(`/search`);
   };
 
+  // legal policies modal
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  useEffect(() => {
+    const hasConfirmed = localStorage.getItem("userConfirmed");
+    if (hasConfirmed === "true") {
+      setIsModalOpen(false);
+    } else {
+      setIsModalOpen(true);
+    }
+  }, []);
+
+  const handleModalConfirm = () => {
+    localStorage.setItem("userConfirmed", "true");
+    setIsModalOpen(false);
+  };
+
   return (
     <div className="screen-container">
       {/* <div className="text-center">
@@ -67,6 +85,12 @@ export default function Home() {
           Start Chatting
         </button>
       </div> */}
+
+      <ModalPoliciesConfirm
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onConfirm={handleModalConfirm}
+      />
 
       <div className="h-full w-full flex flex-col items-center">
         <Navbar callFeature={true} />

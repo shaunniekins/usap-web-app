@@ -6,7 +6,11 @@ interface ModalProps {
   onConfirm: () => void;
 }
 
-const Modal: React.FC<ModalProps> = ({ isOpen, onClose, onConfirm }) => {
+const ModalPoliciesConfirm: React.FC<ModalProps> = ({
+  isOpen,
+  onClose,
+  onConfirm,
+}) => {
   const [isPersistent, setIsPersistent] = useState(true);
 
   if (!isOpen) return null;
@@ -28,8 +32,8 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, onConfirm }) => {
       >
         <div className="text-xl font-semibold mb-4">Confirmation</div>
         <div className="mb-4">
-          By clicking &quot;Confirm,&quot; you acknowledge that you have read and accepted
-          the
+          By clicking &quot;Confirm,&quot; you acknowledge that you have read
+          and accepted the
           <a
             href="/privacy-policy"
             className="text-blue-500 underline ml-1"
@@ -62,4 +66,4 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, onConfirm }) => {
   );
 };
 
-export default Modal;
+export default ModalPoliciesConfirm;
