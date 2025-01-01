@@ -9,6 +9,7 @@ interface NavbarProps {
 
 const Navbar = ({ onLeave, partnerConnected, callFeature }: NavbarProps) => {
   const router = useRouter();
+
   return (
     <div className="w-screen top-0 absolute bg-theme flex justify-center items-center shadow-md">
       <button
@@ -18,6 +19,8 @@ const Navbar = ({ onLeave, partnerConnected, callFeature }: NavbarProps) => {
               !partnerConnected ||
               window.confirm("Are you sure you want to leave?")
             ) {
+              onLeave();
+            } else {
               onLeave();
             }
             return;
