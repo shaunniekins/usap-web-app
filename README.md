@@ -26,26 +26,31 @@ Firestore requires indexes for certain queries. Follow the steps below to config
 
 1. **Install Firebase CLI**:  
    If you haven't already, install the Firebase CLI globally:  
+
    ```bash
    npm install -g firebase-tools
    ```
 
 2. **Log in to Firebase**:  
    Log in to your Firebase account:  
+
    ```bash
    firebase login
    ```
 
 3. **Initialize Firebase in Your Project**:  
    Run the initialization command and follow the prompts:  
+
    ```bash
    firebase init
    ```
+
    - Select **"Firestore"** when prompted to configure features.
    - Choose your Firebase project from the list.
 
 4. **Deploy Firestore Indexes**:  
    Once initialized, deploy the required indexes:  
+
    ```bash
    firebase deploy --only firestore:indexes
    ```
@@ -78,10 +83,11 @@ If you'd prefer to configure indexes manually:
 
 5. Click **"Create Index"** to save the configuration.
 
-
 ## Additional Notes
 
 - Ensure your Firebase project is properly linked to the application in the `.env.local` file.  
 - For more details about setting up Firestore indexes, refer to the [Firebase Firestore Index Documentation](https://firebase.google.com/docs/firestore/query-data/indexing).  
 
 ---
+
+**Note:** _This project is **discontinued** due to skill issue haha.
