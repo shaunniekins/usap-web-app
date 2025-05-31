@@ -90,4 +90,4 @@ If you'd prefer to configure indexes manually:
 
 ---
 
-**Note:** _This project is **discontinued** due to skill issue haha.
+**Note:** _This project is **discontinued**._
